@@ -12,12 +12,29 @@ struct list_head *q_new()
     if (!head)
         return NULL;
 
-    list_head(head);
+    INIT_LIST_HEAD(head);
     return head;
 }
 
 /* Free all storage used by queue */
-void q_free(struct list_head *head) {}
+void q_free(struct list_head *head)
+{
+    if (!head)
+        return;
+
+    struct list_head *safe, *curr;
+    element_t *tmp;
+
+    list_for_each_safe (curr, safe, head) {
+        tmp = list_entry(curr, typeof(*tmp), list);
+        list_del(curr);
+        free(tmp->value);
+        free(tmp);
+    }
+    free(head);
+
+    return;
+}
 
 /* Insert an element at head of queue */
 bool q_insert_head(struct list_head *head, char *s)

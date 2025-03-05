@@ -163,15 +163,13 @@ void q_swap(struct list_head *head)
     if (!head || list_empty(head))
         return;
 
-    struct list_head *curr = head->next, *tmp;
-    for (; curr->next != head && curr->next->next != head; curr = curr->next) {
-        // swap prev pointer
-        tmp = curr->prev;
-        curr->prev = curr->next;
-        curr->next->prev = tmp;
-        // swap next pointer
-        curr->next = curr->prev->next;
-        curr->prev->next = curr;
+    struct list_head *curr = head->next, *seg_head = head;
+    for (struct list_head *tmp; curr != head && curr->next != head;
+         curr = curr->next) {
+        tmp = curr->next;
+        list_del(curr->next);
+        list_add(tmp, seg_head);
+        seg_head = curr;
     }
     return;
 }

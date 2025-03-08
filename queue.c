@@ -25,7 +25,7 @@ void q_free(struct list_head *head)
     struct list_head *safe, *curr;
     element_t *tmp;
 
-    list_for_each_safe (curr, safe, head) {
+    list_for_each_safe(curr, safe, head) {
         tmp = list_entry(curr, typeof(*tmp), list);
         list_del(curr);
         free(tmp->value);
@@ -120,7 +120,7 @@ int q_size(struct list_head *head)
 
     struct list_head *ptr;
     int len = 0;
-    list_for_each (ptr, head)
+    list_for_each(ptr, head)
         len++;
     return len;
 }
@@ -362,5 +362,22 @@ int q_descend(struct list_head *head)
 int q_merge(struct list_head *head, bool descend)
 {
     // https://leetcode.com/problems/merge-k-sorted-lists/
-    return 0;
+    if (!head || list_empty(head))
+        return 0;
+
+    if (list_is_singular(head))
+        return q_size(list_first_entry(head, queue_contex_t, chain)->q);
+    struct list_head *first = list_first_entry(head, queue_contex_t, chain)->q,
+                     *next_merge = head->next->next;
+    while (next_merge != head) {
+        struct list_head *queue_head =
+            list_entry(next_merge, queue_contex_t, chain)->q;
+        mergeSort_merge(first, queue_head, descend);
+        list_entry(first, queue_contex_t, chain)->size +=
+            list_entry(next_merge, queue_contex_t, chain)->size;
+        list_entry(next_merge, queue_contex_t, chain)->size = 0;
+        next_merge = next_merge->next;
+    }
+
+    return q_size(list_first_entry(head, queue_contex_t, chain)->q);
 }

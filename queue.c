@@ -235,12 +235,11 @@ void q_reverseK(struct list_head *head, int k)
 
     int length = q_size(head);
     struct list_head *seg_head = head, *curr = head->next, *tmp;
-    for (int i = 0, bound; i + k < length;) {
+    for (int i = 0, bound; i + k <= length;) {
         bound = i + k;
         while (i < bound) {
             tmp = curr->next;
-            list_del(curr);
-            list_add(curr, seg_head);
+            list_move(curr, seg_head);
             curr = tmp;
             i++;
         }

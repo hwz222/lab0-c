@@ -320,7 +320,10 @@ int q_ascend(struct list_head *head)
     while (curr->prev != head) {
         if (strcmp(list_entry(curr->prev, element_t, list)->value, up_bound) >
             0) {
+            struct list_head *tmp = curr->prev;
             list_del(curr->prev);
+            free(list_entry(tmp, element_t, list)->value);
+            free(list_entry(tmp, element_t, list));
         } else {
             up_bound = list_entry(curr->prev, element_t, list)->value;
             curr = curr->prev;
@@ -342,7 +345,10 @@ int q_descend(struct list_head *head)
     while (curr->prev != head) {
         if (strcmp(list_entry(curr->prev, element_t, list)->value, low_bound) <
             0) {
+            struct list_head *tmp = curr->prev;
             list_del(curr->prev);
+            free(list_entry(tmp, element_t, list)->value);
+            free(list_entry(tmp, element_t, list));
         } else {
             low_bound = list_entry(curr->prev, element_t, list)->value;
             curr = curr->prev;

@@ -212,14 +212,10 @@ void q_reverse(struct list_head *head)
     if (!head || list_empty(head) || list_is_singular(head))
         return;
 
-    struct list_head *ptr = head, *tmp;
-    do {
-        tmp = ptr->prev;
-        ptr->prev = ptr->next;
-        ptr->next = tmp;
-        ptr = ptr->prev;
-    } while (ptr != head);
-
+    struct list_head *safe, *ptr;
+    list_for_each_safe(ptr, safe, head) {
+        list_move(ptr, head);
+    }
     return;
 }
 
